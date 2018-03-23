@@ -21,7 +21,9 @@ function createWindow() {
     slashes: true
   }))
 
-  mainWindow.webContents.openDevTools()
+  if (process.env.ELECTRON_ENV === 'dev') {
+    mainWindow.webContents.openDevTools()
+  }
 
   mainWindow.on('closed', function() {
     mainWindow = null
