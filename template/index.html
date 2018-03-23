@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      function loadScript(url) {
+        const node = document.createElement("script")
+        node.charset = 'utf-8'
+        node.async = true
+        node.src = url
+        document.head.appendChild(node)
+      }
+      function loadCss(url, callback) {
+        const node = document.createElement('link')
+        node.charset = 'utf-8'
+        node.rel = 'stylesheet'
+        node.href = url
+        document.head.appendChild(node)
+      }
+      // You can also require other files to run in this process
+      if (process.env.ELECTRON_ENV == "dev") {
+        loadScript('http://localhost:8888/main.js')
+      } else {
+        loadCss('./build/main.css')
+        require('./build/main.js')        
+      }
+    </script>
+  </body>
+</html>

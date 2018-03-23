@@ -1,0 +1,60 @@
+:global {
+  .menu-icon {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 8px;
+    width: 12px;
+    color: #fff;
+  }
+  .menu-icon svg {
+    position: relative;
+    top: 2px;
+    opacity: 0.44;
+  }
+
+  .menu-icon-active svg {
+    opacity: 1;
+  }
+
+  .ant-menu-submenu.active,
+  .ant-menu-submenu.active .ant-menu-submenu-title:hover {
+    background: #4B5CC4 !important;
+  }
+  .ant-menu-submenu.active .menu-icon svg {
+    opacity: 1;
+  }
+  .no-permission > .ant-menu-submenu-title:after {
+    display: none;
+  }
+
+  .app-menu {
+    .circle {
+      position: absolute;
+      left: 24px + 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.44)
+    }
+    .circle.small {
+      width: 6px;
+      height: 6px;
+      left: 48px;
+    }
+  }
+
+  .ant-menu-dark .ant-menu-item:hover,
+  .ant-menu-dark .ant-menu-item-active,
+  .ant-menu-dark .ant-menu-submenu-active,
+  .ant-menu-dark:not(.ant-menu-inline) .ant-menu-submenu-open,
+  .ant-menu-dark .ant-menu-submenu-selected,
+  .ant-menu-dark .ant-menu-submenu-title:hover {
+    background-color: #404040;
+  }
+
+  .ant-menu.ant-menu-dark .ant-menu-item-selected {
+    background-color: #4B5CC4 !important;
+  }
+}

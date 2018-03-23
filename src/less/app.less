@@ -1,0 +1,90 @@
+/*
+ * 全局样式
+ */
+ @header-height: 64px;
+
+ :global {
+   html, body, #app {
+     height: 100%;
+   }
+ 
+   body {
+     font-family: PingFang SC,Lantinghei SC,Microsoft Yahei,Hiragino Sans GB,Microsoft Sans Serif,WenQuanYi Micro Hei,sans-serif;
+   }
+
+   .app-root {
+     min-height: 100%;
+     padding-left: 200px;
+    //  padding-top: @header-height;
+   }
+ 
+   .app-header {
+     position: fixed;
+     left: 0;
+     top: 0;
+     width: 100%;
+     height: @header-height;
+     z-index: 800;
+     display: none;
+   }
+ 
+   .app-menu {
+     position: fixed;
+     left: 0;
+    //  top: @header-height;
+     width: 200px;
+     height: 100%;
+     overflow: auto;
+     z-index: 800;
+     background: #404040;
+     padding: 10px 0 @header-height + 10px;
+   }
+ 
+   .app-content {
+     padding: 20px;
+   }
+ 
+   svg {
+     fill: currentColor;
+   }
+ 
+   .center {
+     text-align: center;
+   }
+   .ant-table-thead > tr > th.center {
+     text-align: center;
+   }
+   .right {
+     text-align: right;
+   }
+   .hidden {
+     display: none;
+   }
+   .invisible {
+     visibility: hidden;
+   }
+   .nowrap {
+     white-space: nowrap;
+   }
+ 
+   h1.page-title {
+     font-size: 22px;
+     line-height: 30px;
+     font-weight: normal;
+     border-bottom: 1px solid #efefef;
+     padding-bottom: 6px;
+     margin-bottom: 20px;
+   }
+ 
+   /*
+    * 去掉g2 tooltip的白色边框
+    */
+   .g2-tooltip-list li span {
+     border: none !important;
+   }
+ 
+   .cropper-modal {
+     background-color: #fff !important;
+   }
+ }
+ 
