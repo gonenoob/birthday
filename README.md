@@ -28,9 +28,9 @@
 ```
 npm install
 开发
-	npm start
-	npm run build:dev
+ npm start
+ npm run build:dev
 打包
-   npm run build
-   npm run pack
+ npm run build
+ npm run pack
 ```
