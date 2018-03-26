@@ -34,3 +34,6 @@ npm install
  npm run build
  npm run pack
 ```
+
+## 其他
+* png2icns生成icon
