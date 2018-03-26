@@ -46,7 +46,7 @@ export default class Birth extends Component {
   render() {
     
     return (
-      <div>
+      <div styleName="calendar-wrapper">
         <div styleName="btn-wrapper">
           <Button onClick={ this.handleAdd.bind(this) } type="primary">添加生日</Button>
         </div>
