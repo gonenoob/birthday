@@ -7,7 +7,7 @@
     "build:dev": "BABEL_ENV=dev webpack-dev-server -w --port 8888 --env=dev",
     "build": "webpack --env=dll && BABEL_ENV=production webpack --env=production",
     "start": "ELECTRON_ENV=dev electron .",
-    "pack": "electron-packager . --out=release --ignore=\"(src|.gitignore|config|node_modules|tmp|template|tsconfig.json|.babelrc|eslintrc.js|README.md|tsconfig.json)\" --overwrite"
+    "pack": "electron-packager . \"生日记录器\" --icon=assets/img/icon.icns --out=release --ignore=\"(src|.gitignore|config|node_modules|tmp|template|tsconfig.json|.babelrc|eslintrc.js|README.md|tsconfig.json)\" --overwrite"
   },
   "author": "",
   "license": "ISC",
