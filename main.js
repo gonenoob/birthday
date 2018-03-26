@@ -11,8 +11,8 @@ if (process.env.ELECTRON_ENV === 'dev') {
 }
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 750
+    width: 1000,
+    height: 700
   })
   
   mainWindow.loadURL(url.format({
@@ -29,6 +29,7 @@ function createWindow() {
     mainWindow = null
   })
 
+  require('./service/setting')
   require('./service/date')
 }
 

@@ -18,17 +18,46 @@ module.exports = {
     modules: ['node_modules', 'src']
   },
   module: {
-    rules: rules.concat([{
+    rules: rules.concat([
+      {
         test: /\.jsx?$/,
-        loader: ['babel-loader']
+        loader: ['babel-loader'],
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract([
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: 'config/postcss.config.js'
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.css$/,
+        exclude: /codemirror|cropperjs/,
+        use: ExtractTextPlugin.extract([
           {
             loader: 'css-loader',
             options: {
-              minimize: true
+              minimize: true,
+              modules: true
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: 'config/postcss.config.js'
+              }
             }
           }
         ])
@@ -36,11 +65,20 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /(node_modules|antd)/,
-        loader: ExtractTextPlugin.extract([
+        use: ExtractTextPlugin.extract([
           {
             loader: 'css-loader',
             options: {
-              minimize: true
+              minimize: true,
+              modules: true
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: 'config/postcss.config.js'
+              }
             }
           },
           {
@@ -53,7 +91,7 @@ module.exports = {
       },
       {
         test: /antd\.less$/,
-        loader: ExtractTextPlugin.extract([
+        use: ExtractTextPlugin.extract([
           {
             loader: 'css-loader',
             options: {
@@ -61,21 +99,28 @@ module.exports = {
             }
           },
           {
-            loader: 'less-loader',
-          }
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: 'config/postcss.config.js'
+              }
+            }
+          },
+          'less-loader'
         ])
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/,
-        use: [
-          'url-loader?limit=8192&name=image/[hash].[ext]'
-        ]
+        test: /\.(png|jpe?g|gif)$/,
+        use: 'url-loader?limit=8192&name=image/[hash].[ext]'
       }
     ])
   },
   plugins: [
     new WebpackCleanupPlugin({
       exclude: ['vendor.js']
+    }),
+    new webpack.DllReferencePlugin({
+      manifest: require('../tmp/manifest.json')
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),

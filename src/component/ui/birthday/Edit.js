@@ -6,6 +6,7 @@ import { ipcRenderer } from 'electron'
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
+const TextArea = Input.TextArea
 
 const formItemLayout = {
   labelCol: {
@@ -44,6 +45,10 @@ export default class Edit extends Component {
       let data = ipcRenderer.sendSync(channel, values)
       if (data.success) {
         message.success(`${typeWords}成功`)
+
+        if (this.props.callback) {
+          this.props.callback()
+        }
         this.props.hideModal()
       } else {
         message.error(data.msg)
@@ -129,6 +134,30 @@ export default class Edit extends Component {
                 }]
               })(
                 <InputNumber min={1}  max={31}/>
+              )
+            }
+          </FormItem>
+          <FormItem
+          {...formItemLayout}
+          label="出生年份"
+          >
+            {
+              getFieldDecorator('year', {
+                initialValue: isEdit ? data.year : undefined
+              })(
+                <InputNumber min={1800} />
+              )
+            }
+          </FormItem>
+          <FormItem
+          {...formItemLayout}
+          label="联系方式"
+          >
+            {
+              getFieldDecorator('contact', {
+                initialValue: isEdit ? data.contact : undefined
+              })(
+                <TextArea style={{ width: '60%' }} autosize={{ minRows: 2, maxRows: 6 }} />
               )
             }
           </FormItem>

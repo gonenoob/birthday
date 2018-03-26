@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Table, message, Button, Modal } from 'antd'
+import { Table, message, Button, Modal, Switch } from 'antd'
 import { ipcRenderer } from 'electron'
 import solarLunar from 'solarlunar'
 
@@ -19,12 +19,16 @@ export default class BirthTable extends Component {
       itemCount: 0,
       loading: false,
       showEdit: false,
-      record: {}
+      record: {},
+      showAge: true
     }
   }
 
   componentDidMount() {
     this.getItems()
+
+    let showAge = ipcRenderer.sendSync('get-age-show-config')
+    this.setState(showAge)
   }
 
   getItems() {
@@ -39,6 +43,14 @@ export default class BirthTable extends Component {
     } else {
       message.error(response.msg)
     }
+  }
+
+  editCallback() {
+    this.setState({
+      pageNo: 1
+    }, () => {
+      this.getItems()
+    })
   }
 
   getPagination() {
@@ -63,18 +75,22 @@ export default class BirthTable extends Component {
 
   getColumns() {
     
-    return [{
+    let columns = [{
       title: '序号',
-      dataIndex: 'rowNo'
+      dataIndex: 'rowNo',
+      className: 'td-center'
     }, {
       title: '姓名',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      className: 'td-center'
     }, {
       title: '阴阳历',
       dataIndex: 'type',
+      className: 'td-center',
       render: v => birthdayType[v]
     }, {
       title: '生日',
+      className: 'td-center',
       render: record => {
         if (record.type == 1) {
           let month = solarLunar.toChinaMonth(record.month)
@@ -88,7 +104,28 @@ export default class BirthTable extends Component {
         }
       }
     }, {
+      title: '年龄/出生年/生肖',
+      dataIndex: 'year',
+      className: 'td-center',
+      render: v => {
+        return (
+          <div>
+            {
+              v ? `${new Date().getFullYear() - v}岁/${v}/${solarLunar.getAnimal(v)}` : '—'
+            }
+          </div>
+        ) 
+      }
+    }, {
+      title: '联系方式',
+      dataIndex: 'contact',
+      className: 'td-center',
+      render: v => {
+        return v ? <pre>{v}</pre> : '—'
+      }
+    }, {
       title: '操作',
+      className: 'td-center',
       render: record => {
         return (
           <div>
@@ -98,6 +135,12 @@ export default class BirthTable extends Component {
         )
       }
     }]
+
+    if (!this.state.showAge) {
+      columns.splice(4, 1)
+    }
+
+    return columns
   }
 
   handleEdit(record) {
@@ -140,9 +183,27 @@ export default class BirthTable extends Component {
     })
   }
 
+  handleShowAge(v) {
+    this.setState({
+      showAge: v
+    })
+
+    let res = ipcRenderer.sendSync('set-age-show-config', {
+      showAge: v
+    })
+
+    if (!res.success) {
+      message.error('设置失败')
+      this.setState({
+        showAge: !v
+      })
+    }
+  }
+
   render() {
     return (
       <div>
+        <div style={{ marginBottom: '20px' }}>默认是否展示年龄：<Switch checked={this.state.showAge} onChange={this.handleShowAge.bind(this)} /></div>
         <Table 
           loading={ this.state.loading }
           dataSource={ this.state.items }
@@ -151,7 +212,7 @@ export default class BirthTable extends Component {
           rowKey={r => r.id}
           bordered={true}
         />
-        <Edit data={this.state.record} type="edit" show={ this.state.showEdit } hideModal={ ()=> this.setState({ showEdit: false }) } />
+        <Edit data={this.state.record} callback={()=> this.editCallback()} type="edit" show={ this.state.showEdit } hideModal={ ()=> this.setState({ showEdit: false }) } />
       </div>
     )
   }
