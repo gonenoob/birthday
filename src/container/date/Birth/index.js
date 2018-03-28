@@ -8,8 +8,9 @@ import styles from './less/index.less'
 import Calendar from './component/Calendar'
 import Edit from '../../../component/ui/birthday/Edit'
 
-@observer
+@inject('userStore', 'userActions')
 @CSSModules(styles)
+@observer
 export default class Birth extends Component {
   constructor(props) {
     super(props)
@@ -50,7 +51,7 @@ export default class Birth extends Component {
         <div styleName="btn-wrapper">
           <Button onClick={ this.handleAdd.bind(this) } type="primary">添加生日</Button>
         </div>
-        <Calendar list={this.state.list} />
+        <Calendar list={this.state.list} showNotification={this.props.userStore.showNotification} userActions={this.props.userActions} />
         <Edit show={ this.state.showAdd } hideModal={ ()=> this.setState({ showAdd: false }) } />
       </div>
     )

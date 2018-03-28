@@ -55,6 +55,7 @@
     "react-css-modules": "4.5.1",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
-    "solarlunar": "^2.0.1"
+    "solarlunar": "^2.0.1",
+    "sequelize": "^4.18.0"
   }
 }

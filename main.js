@@ -29,8 +29,7 @@ function createWindow() {
     mainWindow = null
   })
 
-  require('./service/setting')
-  require('./service/date')
+  require('./service')
 }
 
 

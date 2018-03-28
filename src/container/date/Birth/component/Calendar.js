@@ -22,9 +22,6 @@ export default class MyCalendar extends Component {
   }
 
   componentDidMount() {
-    // this.setState({
-    //   data: this.handleDate(this.props.list || [])
-    // })
   }
 
   componentWillReceiveProps(newProps) {
@@ -36,6 +33,25 @@ export default class MyCalendar extends Component {
       this.setState({
         data
       })
+      
+      if (this.props.showNotification) {
+        let month = new Date().getMonth() + 1
+        let day = new Date().getDate()
+        let peoples = data[month] && data[month][day] || []
+        
+        if (peoples.length) {
+          let names = peoples.map(people => {
+            return people.name
+          })
+          let myNotification = new Notification('今天生日', {
+            body: names.join(',')
+          })
+        }
+
+        this.props.userActions.merge({
+          showNotification: false
+        })
+      }
     }
   }
 
