@@ -44,7 +44,7 @@ export default class MyCalendar extends Component {
             return people.name
           })
           let myNotification = new Notification('今天生日', {
-            body: names.join(',')
+            body: names.length > 7 ? names.slice(0,7).join(',') + '等' : names.join(',')
           })
         }
 
