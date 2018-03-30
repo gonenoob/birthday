@@ -1,5 +1,6 @@
 {
   "name": "myelectron",
+  "productName": "Birthday Recorder",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",

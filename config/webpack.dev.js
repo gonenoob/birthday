@@ -21,7 +21,8 @@ module.exports = {
     alias: {
       constant: resolve('constant')
     },
-    modules: ['node_modules', 'src']
+    modules: ['node_modules', 'src'],
+    extensions: ['.js', '.jsx']
   },
   module: {
     rules: rules.concat([

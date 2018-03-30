@@ -200,9 +200,14 @@ export default class BirthTable extends Component {
     }
   }
 
+  handleShowChild() {
+    ipcRenderer.sendSync('show-child')
+  }
+
   render() {
     return (
       <div>
+        <Button onClick={this.handleShowChild.bind(this)}>展示子窗口</Button>
         <div style={{ marginBottom: '20px' }}>默认是否展示年龄：<Switch checked={this.state.showAge} onChange={this.handleShowAge.bind(this)} /></div>
         <Table 
           loading={ this.state.loading }
