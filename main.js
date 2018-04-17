@@ -4,9 +4,19 @@ const url = require('url')
 const { JSONStorage } = require('node-localstorage')
 
 global.nodeStorage = new JSONStorage(app.getPath('userData'))
+global.sharedObject = {
+  value: 1
+}
 
 let mainWindow
-let windowState = {}
+let windowState = {
+  bounds: {
+    x: undefined,
+    y: undefined,
+    width: 1000,
+    height: 700
+  }
+}
 
 try {
   windowState = global.nodeStorage.getItem('windowState') || {}
@@ -40,7 +50,7 @@ function createWindow() {
   }))
 
   if (process.env.ELECTRON_ENV === 'dev') {
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
   }
 
   mainWindow.on('closed', function() {
@@ -68,6 +78,11 @@ function createWindow() {
 
 app.on('ready', ()=> {
   createWindow()
+
+  //打开子窗口
+  ipcMain.on('show-child', (event, arg) => {
+    makeChild()
+  })
 })
 
 app.on('activate', function() {
@@ -91,21 +106,20 @@ function storeWindowState() {
   global.nodeStorage.setItem('windowState', windowState)
 }
 
-//打开子窗口
-ipcMain.on('show-child', (event, arg) => {
-  makeChild()
-})
-
-
 //新建子窗口
 function makeChild() {
   let child = new BrowserWindow({
     parent: mainWindow,
     modal: false,
     show: false,
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
+    closable: true,
     resizable: false,
-    minimizable: false
+    minimizable: false,
+    x: windowState.bounds.x + 50,
+    y: windowState.bounds.y + 50,
+    width: windowState.bounds.width - 100,
+    height: windowState.bounds.height - 100
   })
 
   child.loadURL(url.format({
@@ -114,10 +128,18 @@ function makeChild() {
     slashes: true
   }))
   
+  if (process.env.ELECTRON_ENV === 'dev') {
+    child.webContents.openDevTools()
+  }
+
   child.once('ready-to-show', ()=> {
     child.show()
   })
-  
+
+  child.on('close', function() {
+    child.destroy()
+  })
+
   child.on('closed', function() {
     child = null
   })

@@ -201,7 +201,7 @@ export default class BirthTable extends Component {
   }
 
   handleShowChild() {
-    ipcRenderer.sendSync('show-child')
+    ipcRenderer.send('show-child')
   }
 
   render() {
