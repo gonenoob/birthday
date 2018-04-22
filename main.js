@@ -1,12 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const { JSONStorage } = require('node-localstorage')
 
 global.nodeStorage = new JSONStorage(app.getPath('userData'))
-global.sharedObject = {
-  value: 1
-}
 
 let mainWindow
 let windowState = {
@@ -24,10 +21,10 @@ try {
   console.log(e)
 }
 
-let entryPath = './build/index.html'
+let entryPath = './build/'
 
 if (process.env.ELECTRON_ENV === 'dev') {
-  entryPath = './template/index.html'
+  entryPath = './template/'
 }
 
 function createWindow() {
@@ -43,7 +40,7 @@ function createWindow() {
   }
 
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, entryPath),
+    pathname: path.join(__dirname, entryPath, 'index.html'),
     protocol: 'file:',
     slashes: true,
     acceptFirstMouse: true
@@ -123,7 +120,7 @@ function makeChild() {
   })
 
   child.loadURL(url.format({
-    pathname: path.join(__dirname, './template/login.html'),
+    pathname: path.join(__dirname, entryPath, 'login.html'),
     protocol: 'file:',
     slashes: true
   }))
