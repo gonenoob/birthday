@@ -1,31 +1,12 @@
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
-const { app, BrowserWindow, ipcMain } = require('electron')
-const { JSONStorage } = require('node-localstorage')
-
-global.nodeStorage = new JSONStorage(app.getPath('userData'))
-
+// const { JSONStorage } = require('node-localstorage')
+const settings = require('electron-settings')
+const { setMenu } = require('./menu/menu')
 let mainWindow
-let windowState = {
-  bounds: {
-    x: undefined,
-    y: undefined,
-    width: 1000,
-    height: 700
-  }
-}
-
-try {
-  windowState = global.nodeStorage.getItem('windowState') || {}
-} catch (e) {
-  console.log(e)
-}
-
-let entryPath = './build/'
-
-if (process.env.ELECTRON_ENV === 'dev') {
-  entryPath = './template/'
-}
+let windowState = {}
+let entryPath = process.env.ELECTRON_ENV === 'dev' ? './template/' : './build/'
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -42,29 +23,21 @@ function createWindow() {
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, entryPath, 'index.html'),
     protocol: 'file:',
-    slashes: true,
-    acceptFirstMouse: true
+    slashes: true
   }))
 
+  setMenu(mainWindow)
+  require('./service')
+  
   if (process.env.ELECTRON_ENV === 'dev') {
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
   }
 
   mainWindow.on('closed', function() {
     mainWindow = null
   })
 
-  mainWindow.on('unresponsive', function() {
-    console.log('mainWindow unresponsive')
-  })
 
-  mainWindow.on('responsive', function() {
-    console.log('mainWindow responsive')
-  })
-
-  require('./service')
-
-  //窗口位置大小改变时记录
   let storageEvents = ['resize', 'move', 'close']
   storageEvents.map(function(e) {
     mainWindow.on(e, function() {
@@ -73,13 +46,13 @@ function createWindow() {
   })
 }
 
-app.on('ready', ()=> {
+app.on('ready', () => {
+  try {
+    windowState = settings.get('windowState') || {}
+  } catch (e) {
+    console.log(e)
+  }
   createWindow()
-
-  //打开子窗口
-  ipcMain.on('show-child', (event, arg) => {
-    makeChild()
-  })
 })
 
 app.on('activate', function() {
@@ -88,11 +61,6 @@ app.on('activate', function() {
   }
 })
 
-app.on('window-all-closed', () => {
-  app.quit()
-})
-
-//存储窗口位置大小信息
 function storeWindowState() {
   windowState.isMaximized = mainWindow.isMaximized()
 
@@ -100,8 +68,13 @@ function storeWindowState() {
     windowState.bounds = mainWindow.getBounds()
   }
 
-  global.nodeStorage.setItem('windowState', windowState)
+  settings.setAll({windowState})
 }
+
+//打开子窗口
+ipcMain.on('show-child', (event, arg) => {
+  makeChild()
+})
 
 //新建子窗口
 function makeChild() {
@@ -109,14 +82,9 @@ function makeChild() {
     parent: mainWindow,
     modal: false,
     show: false,
-    autoHideMenuBar: false,
-    closable: true,
+    autoHideMenuBar: true,
     resizable: false,
-    minimizable: false,
-    x: windowState.bounds.x + 50,
-    y: windowState.bounds.y + 50,
-    width: windowState.bounds.width - 100,
-    height: windowState.bounds.height - 100
+    minimizable: false
   })
 
   child.loadURL(url.format({
@@ -124,7 +92,7 @@ function makeChild() {
     protocol: 'file:',
     slashes: true
   }))
-  
+
   if (process.env.ELECTRON_ENV === 'dev') {
     child.webContents.openDevTools()
   }
@@ -132,11 +100,7 @@ function makeChild() {
   child.once('ready-to-show', ()=> {
     child.show()
   })
-
-  child.on('close', function() {
-    child.destroy()
-  })
-
+  
   child.on('closed', function() {
     child = null
   })

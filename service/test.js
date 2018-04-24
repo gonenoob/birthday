@@ -28,4 +28,3 @@ ipcMain.on('getMsg', (event, arg) => {
     })
   }
 })
-

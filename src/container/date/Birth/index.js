@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { observer, inject } from "mobx-react"
 import CSSModules from 'react-css-modules'
-import { Table, Input, Button, message } from 'antd'
+import { Table, Input, Button, message, Modal } from 'antd'
 import { ipcRenderer } from 'electron'
 
 import styles from './less/index.less'
@@ -34,6 +34,16 @@ export default class Birth extends Component {
     ipcRenderer.on('birthday-change-reply', (event, res) => {
       this.setState({
         list: res.data.items
+      })
+    })
+
+    ipcRenderer.on('new-msg', (event, res) => {
+      Modal.confirm({
+        title: '消息',
+        content: '来自菜单栏的消息',
+        onOk: () => {
+          return Promise.resolve()
+        }
       })
     })
   }

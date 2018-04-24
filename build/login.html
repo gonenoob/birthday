@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>birthday recorder</title>
+  </head>
+  <body>
+    <div id="app" >login</div>
+    <script>
+      const ipc = require('electron').ipcRenderer;
+      var ipt = document.getElementById('app')
+      
+      ipt.onclick = connectMain
+      function connectMain() {
+        ipc.send('getMsg')
+      }
+
+      ipc.on('getMsg-reply', function(err, res) {
+        console.log(res)
+      })
+    </script>
+  </body>
+</html>
